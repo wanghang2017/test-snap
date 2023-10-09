@@ -22,6 +22,12 @@ If you would like to integrate `btcsnap` into your dapp, you can make use of our
 
 ### How to run `btcsnap` on a wallet locally
 
+Navigate to the `snap` folder under `packages`, launch our app locally by running:
+
+```shell
+yarn install && yarn start
+```
+
 Navigate to the `example` folder under `packages`, launch our app locally by running:
 
 ```shell
