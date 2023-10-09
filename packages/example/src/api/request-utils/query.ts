@@ -60,9 +60,6 @@ export const query = async (
     const url = `${BACKEND_DOMAIN}${endPoint}`;
     const response = await fetchResult(url, requestObj);
     const value = response.data;
-    if(url.includes('api')){
-      return value;
-    }
     if (value.success) {
       return objectKeysToCamelCase(value.result);
     }

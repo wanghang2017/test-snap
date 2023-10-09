@@ -43,9 +43,6 @@ export const AccountLabel = styled.p`
   }
 `;
 
-export const AccountContainer= styled.div`
-  display:flex;
-`;
 export const AccountHeader = styled.div`
   position: fixed;
   top: 50px;
