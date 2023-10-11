@@ -27,10 +27,11 @@ const fetchFncList = async (ary: (()=>Promise<any>)[], num:number)=>{
 
 class UtxoListView{
   private utxoListBase: UtxoListResponse = [];
-  private address= '';
+  public address= '';
   public column= '';
   public direction: 'descending' |'ascending'|undefined ;
   public loading=false;
+  public psbtList = [];
   public columnList = [
     {
       title: 'txid'
@@ -49,12 +50,18 @@ class UtxoListView{
     },
     {
       title:'isOrdinal'
+    },
+    {
+      title: 'operate'
     }
   ];
   constructor(){
     makeAutoObservable(this);
   }
 
+  setPsbtList(psbtList:[]){
+    this.psbtList=psbtList;
+  }
   setAdress(address:string){
     this.address = address;
   }
@@ -63,15 +70,15 @@ class UtxoListView{
     this.column=column;
   }
 
-  fetchUtxoList =async () => {
+  fetchUtxoList = async (isTest: boolean) => {
     if (this.address) {
       this.loading = true;
-      queryUtxoMem(this.address).then( async data => {
+      queryUtxoMem(this.address, isTest).then( async data => {
         const utxoTxList = data.map( item => async ()=> {
           item.confirmed = item.status.confirmed;
           item.dateTime = item.status.block_time;
           if(item.vout===0){
-            const res = await queryTxMem(item.txid);
+            const res = await queryTxMem(item.txid, isTest);
             const ordinal = res?.vin?.[0]?.witness?.[1] || '';
             if (ordinal && ordinal.includes('0063') && ordinal.endsWith('68')) {
               return { ...item, isOrdinal: true };

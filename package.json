@@ -21,8 +21,8 @@
     "@types/sinon": "^7.5.2",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
-    "eslint-plugin-react": "^7.27.1",
     "eslint": "^7.11.0",
+    "eslint-plugin-react": "^7.27.1",
     "jest": "^27.5.1",
     "lerna": "^4.0.0",
     "sinon": "^9.0.1",
@@ -35,5 +35,5 @@
   "resolutions": {
     "@types/react": "^17.0.40"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@3.6.4"
 }

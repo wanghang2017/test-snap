@@ -24,4 +24,11 @@ module.exports = function (app) {
     //   '^/api': ''
     // }
   }));
+  app.use(createProxyMiddleware('/testnet', {
+    target: 'https://mempool.space/',
+    changeOrigin: true,
+    // pathRewrite: {
+    //   '^/api': ''
+    // }
+  }));
 };
