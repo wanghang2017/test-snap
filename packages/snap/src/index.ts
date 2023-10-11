@@ -2,6 +2,7 @@ import {getNetwork} from './bitcoin/getNetwork';
 import {Snap, MetamaskBTCRpcRequest} from './interface';
 import {
   getExtendedPublicKey,
+  getSimpleAddress,
   getAllXpubs,
   signPsbt,
   getMasterFingerprint,
@@ -11,7 +12,7 @@ import {
   getLNDataFromSnap,
   signLNInvoice,
 } from './rpc';
-import { SnapError, RequestErrors } from './errors';
+import {SnapError, RequestErrors} from './errors';
 
 // @ts-ignore
 globalThis.Buffer = require('buffer/').Buffer;
@@ -34,11 +35,15 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
         request.params.scriptType,
         getNetwork(request.params.network),
       );
-    case 'btc_getAllXpubs':
-      return getAllXpubs(
+    case 'btc_getAddress':
+      return getSimpleAddress(
         origin,
         snap,
+        getNetwork(request.params.network),
+        request.params.index,
       );
+    case 'btc_getAllXpubs':
+      return getAllXpubs(origin, snap);
     case 'btc_signPsbt':
       const psbt = request.params.psbt;
       return signPsbt(
@@ -66,15 +71,11 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
         request.params.password,
       );
     case 'btc_getLNDataFromSnap':
-      return getLNDataFromSnap(
-        origin,
-        snap,
-        {
-          key: request.params.key,
-          ...(request.params.walletId && {walletId: request.params.walletId}),
-          ...(request.params.type && {type: request.params.type}),
-        }
-      );
+      return getLNDataFromSnap(origin, snap, {
+        key: request.params.key,
+        ...(request.params.walletId && {walletId: request.params.walletId}),
+        ...(request.params.type && {type: request.params.type}),
+      });
     case 'btc_signLNInvoice':
       return signLNInvoice(origin, snap, request.params.invoice);
     default:

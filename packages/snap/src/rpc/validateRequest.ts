@@ -6,10 +6,10 @@ import { RequestErrors, SnapError } from '../errors';
 const DOMAIN_WHITELIST = [/\.justsnap\.io$/];
 
 const validateNetwork = async (snap: Snap, network: BitcoinNetwork) => {
-  const snapNetwork = await getPersistedData(snap, 'network', '');
-  if (snapNetwork && network !== snapNetwork) {
-    throw SnapError.of(RequestErrors.NetworkNotMatch);
-  }
+  // const snapNetwork = await getPersistedData(snap, 'network', '');
+  // if (snapNetwork && network !== snapNetwork) {
+  //   throw SnapError.of(RequestErrors.NetworkNotMatch);
+  // }
 };
 
 const validateDomain = async (domain: string) => {

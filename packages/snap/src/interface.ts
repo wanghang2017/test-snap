@@ -6,11 +6,18 @@ export interface GetPublicExtendedKeyRequest {
   };
 }
 
-export interface GetAllXpubsRequest {
-  method: 'btc_getAllXpubs';
-  params: Record<string, never>
+export interface GetAddress {
+  method: 'btc_getAddress';
+  params: {
+    network: BitcoinNetwork;
+    index: number;
+  };
 }
 
+export interface GetAllXpubsRequest {
+  method: 'btc_getAllXpubs';
+  params: Record<string, never>;
+}
 export interface SignPsbt {
   method: 'btc_signPsbt';
   params: {
@@ -46,7 +53,7 @@ export interface GetLNDataFromSnap {
   params: {
     key: KeyOptions;
     walletId?: string;
-    type?: 'get' | 'refresh'
+    type?: 'get' | 'refresh';
   };
 }
 
@@ -59,6 +66,7 @@ export interface SignLNInvoice {
 
 export type MetamaskBTCRpcRequest =
   | GetAllXpubsRequest
+  | GetAddress
   | GetPublicExtendedKeyRequest
   | SignPsbt
   | GetMasterFingerprint
@@ -84,6 +92,7 @@ export enum ScriptType {
   P2PKH = 'P2PKH',
   P2SH_P2WPKH = 'P2SH-P2WPKH',
   P2WPKH = 'P2WPKH',
+  P2TR = 'P2TR',
 }
 
 export enum BitcoinNetwork {
