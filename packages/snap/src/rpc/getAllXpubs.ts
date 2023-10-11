@@ -6,8 +6,7 @@ import { RequestErrors, SnapError } from '../errors';
 import { getHDRootNode } from '../bitcoin/hdKeyring';
 import { getAddress } from '../bitcoin/simpleKeyring';
 
-
-export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: {}, mfp: string}> {
+export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: string[], accounts: {}, mfp: string}> {
   const result = await snap.request({
     method: 'snap_dialog',
     params: {
@@ -22,9 +21,10 @@ export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: {
   if (result) {
     try{
       let xfp = '';
+      const xpubs: string[] = [];
       const xpubsInNetworks = await Promise.all(Object.values(BitcoinNetwork).map(async (bitcoinNetwork: BitcoinNetwork) => {
         const network = bitcoinNetwork === BitcoinNetwork.Main ? networks.bitcoin : networks.testnet;
-        const xpubs = await Promise.all(Object.values(ScriptType).map(async (scriptType: ScriptType) => {
+        const account = await Promise.all(Object.values(ScriptType).map(async (scriptType: ScriptType) => {
           const { node: accountNode, mfp } = await getHDRootNode(snap, network, scriptType);
           xfp = xfp || mfp;
           const extendedPublicKey = accountNode.neutered();
@@ -39,14 +39,15 @@ export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: {
           if (scriptType !== ScriptType.P2TR) {
               xpub = convertXpub(xpub, scriptType, network);
           }
-  
+          xpubs.push(xpub);
           return {[scriptType]: {xpub, address}};
         }));
-        return {bitcoinNetwork: xpubs};
+        return {[bitcoinNetwork]: account};
       }));
       return {
         mfp: xfp,
-        xpubs: xpubsInNetworks
+        xpubs,
+        accounts: xpubsInNetworks
       };
     }catch(e){
       console.log('e...', e);

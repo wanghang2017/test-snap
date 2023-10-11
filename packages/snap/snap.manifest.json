@@ -7,7 +7,7 @@
     "url": "https://github.com/snapdao/btcsnap"
   },
   "source": {
-    "shasum": "sBwi/E7Mmnc27i6G7i3gjUEEseOJWtqY+tPHFV4EwCg=",
+    "shasum": "SlH1gwDWCs5odYouyGjqJHc1mikybrPPaKBuXIoG2S0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -26,35 +26,67 @@
     },
     "snap_getBip32Entropy": [
       {
-        "path": ["m", "44'", "0'"],
+        "path": [
+          "m",
+          "44'",
+          "0'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "44'", "1'"],
+        "path": [
+          "m",
+          "44'",
+          "1'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "49'", "0'"],
+        "path": [
+          "m",
+          "49'",
+          "0'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "49'", "1'"],
+        "path": [
+          "m",
+          "49'",
+          "1'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "84'", "0'"],
+        "path": [
+          "m",
+          "84'",
+          "0'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "84'", "1'"],
+        "path": [
+          "m",
+          "84'",
+          "1'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "86'", "0'"],
+        "path": [
+          "m",
+          "86'",
+          "0'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "86'", "1'"],
+        "path": [
+          "m",
+          "86'",
+          "1'"
+        ],
         "curve": "secp256k1"
       }
     ]
