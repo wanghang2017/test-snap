@@ -1,14 +1,9 @@
-import { SLIP10Node, Snap } from '../interface';
-import { CRYPTO_CURVE, pathMap } from '../rpc/getExtendedPublicKey';
+import { networks } from 'bitcoinjs-lib';
+import { Snap } from '../interface';
+import { getHDRootNode } from '../bitcoin/hdKeyring';
 
 export async function getMasterFingerprint(snap: Snap): Promise<string | void> {
-  const slip10Node = await snap.request({
-    method: 'snap_getBip32Entropy',
-    params: {
-      path: pathMap.P2WPKH,
-      curve: CRYPTO_CURVE
-    },
-  }) as SLIP10Node;
+  const {mfp} = await getHDRootNode(snap, networks.bitcoin);
 
-  return slip10Node.masterFingerprint && slip10Node.masterFingerprint.toString(16).padStart(8, '0');
+  return mfp;
 }

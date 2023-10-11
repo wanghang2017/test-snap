@@ -1,12 +1,12 @@
 import { panel, text, heading } from '@metamask/snaps-ui';
-import { networks } from 'bitcoinjs-lib';
+import { networks, address } from 'bitcoinjs-lib';
 import { BitcoinNetwork, ScriptType, Snap } from '../interface';
 import { convertXpub } from '../bitcoin/xpubConverter';
-import { extractAccountPrivateKey } from './getExtendedPublicKey';
 import { RequestErrors, SnapError } from '../errors';
+import { getHDRootNode } from '../bitcoin/hdKeyring';
+import { getAddress } from '../bitcoin/simpleKeyring';
 
-
-export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: string[], mfp: string}> {
+export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: string[], accounts: {}, mfp: string}> {
   const result = await snap.request({
     method: 'snap_dialog',
     params: {
@@ -19,20 +19,39 @@ export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: s
   });
 
   if (result) {
-    let xfp = '';
-    const xpubsInNetworks = await Promise.all(Object.values(BitcoinNetwork).map(async (bitcoinNetwork: BitcoinNetwork) => {
-      const network = bitcoinNetwork === BitcoinNetwork.Main ? networks.bitcoin : networks.testnet;
-      return await Promise.all(Object.values(ScriptType).map(async (scriptType: ScriptType) => {
-        const { node: accountNode, mfp } = await extractAccountPrivateKey(snap, network, scriptType);
-        xfp = xfp || mfp;
-        const accountPublicKey = accountNode.neutered();
-        return convertXpub(accountPublicKey.toBase58(), scriptType, network);
+    try{
+      let xfp = '';
+      const xpubs: string[] = [];
+      const xpubsInNetworks = await Promise.all(Object.values(BitcoinNetwork).map(async (bitcoinNetwork: BitcoinNetwork) => {
+        const network = bitcoinNetwork === BitcoinNetwork.Main ? networks.bitcoin : networks.testnet;
+        const account = await Promise.all(Object.values(ScriptType).map(async (scriptType: ScriptType) => {
+          const { node: accountNode, mfp } = await getHDRootNode(snap, network, scriptType);
+          xfp = xfp || mfp;
+          const extendedPublicKey = accountNode.neutered();
+
+          const address = getAddress(
+            network,
+            accountNode.publicKey.toString('hex'),
+            scriptType,
+          ) as string;
+          
+          let xpub = extendedPublicKey.toBase58();
+          if (scriptType !== ScriptType.P2TR) {
+              xpub = convertXpub(xpub, scriptType, network);
+          }
+          xpubs.push(xpub);
+          return {[scriptType]: {xpub, address}};
+        }));
+        return {[bitcoinNetwork]: account};
       }));
-    }));
-    return {
-      mfp: xfp,
-      xpubs: xpubsInNetworks.flatMap(xpub => xpub)
-    };
+      return {
+        mfp: xfp,
+        xpubs,
+        accounts: xpubsInNetworks
+      };
+    }catch(e){
+      console.log('e...', e);
+    }
   }
   throw SnapError.of(RequestErrors.RejectKey);
 }

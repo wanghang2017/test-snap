@@ -75,7 +75,8 @@ export const GetAddress = observer(
 
     const handleGetAllExtendedPublicKeys = useCallback(async () => {
       try {
-        const { mfp, xpubs } = await getAllExtendedPublicKeys();
+        const { mfp, xpubs, ...params } = await getAllExtendedPublicKeys();
+        console.log('xpubs...', xpubs, params);
         if (mfp && xpubs.length > 0) {
           trackGetAddress(network);
           setStatus(AppStatus.Register);
