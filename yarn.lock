@@ -7714,6 +7714,7 @@ __metadata:
     prettier: ^2.7.1
     secp256k1: ^5.0.0
     through2: ^4.0.2
+    tsdx: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -11056,6 +11057,7 @@ __metadata:
     os-browserify: ^0.3.0
     prettier: ^2.6.1
     qrcode.react: ^3.0.1
+    querystring: ^0.2.1
     react: ^17.0.2
     react-app-rewired: ^2.2.1
     react-confetti: ^6.1.0
@@ -19371,6 +19373,13 @@ __metadata:
   version: 0.2.1
   resolution: "querystring-es3@npm:0.2.1"
   checksum: 691e8d6b8b157e7cd49ae8e83fcf86de39ab3ba948c25abaa94fba84c0986c641aa2f597770848c64abce290ed17a39c9df6df737dfa7e87c3b63acc7d225d61
+  languageName: node
+  linkType: hard
+
+"querystring@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "querystring@npm:0.2.1"
+  checksum: 7b83b45d641e75fd39cd6625ddfd44e7618e741c61e95281b57bbae8fde0afcc12cf851924559e5cc1ef9baa3b1e06e22b164ea1397d65dd94b801f678d9c8ce
   languageName: node
   linkType: hard
 

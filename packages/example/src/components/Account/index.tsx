@@ -27,7 +27,7 @@ const Account = observer(() => {
   const panes = [
     {
       menuItem: 'account',
-      pane: <Tab.Pane>{
+      pane: <Tab.Pane key={1}>{
         <AccountContainer>
 
           <AccountHeader>
@@ -53,7 +53,7 @@ const Account = observer(() => {
         </AccountContainer>
       }</Tab.Pane>
     },
-    { menuItem: 'utxo', pane: <Tab.Pane>{<UtxoList />}</Tab.Pane> },
+    { menuItem: 'utxo', pane: <Tab.Pane key={2}>{<UtxoList />}</Tab.Pane> },
   ];
 
   return (

@@ -63,6 +63,8 @@
     padding: 14px 24px;
     border-radius: 16px;
     background-color: #F7F9FC;
+    word-break: break-all;
+    max-width: 80%;
 }
 .addressCopied-message {
     width: 184px;

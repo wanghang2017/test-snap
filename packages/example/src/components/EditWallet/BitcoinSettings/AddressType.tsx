@@ -37,6 +37,7 @@ export const addressTypeOptions: AddressType[] = [
   { label: 'HD Native SegWit (Bech32)', type: BitcoinScriptType.P2WPKH },
   { label: 'HD Nested SegWit (P2SH)', type: BitcoinScriptType.P2SH_P2WPKH },
   { label: 'HD Legacy (P2PKH)', type: BitcoinScriptType.P2PKH },
+  { label: 'HD Taproot (P2TR)', type: BitcoinScriptType.P2TR },
 ];
 
 type Balances = Record<BitcoinScriptType, string>

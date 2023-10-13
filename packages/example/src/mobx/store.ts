@@ -80,7 +80,7 @@ const AppStore = types
       );
       if (storedAccount) return storedAccount;
       const account = Account.create(accountIn);
-      await account.initialize();
+      account.setHasXpubSynced(true);
       return account;
     },
     addAccount(newAccount: IAccount) {
