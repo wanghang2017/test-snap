@@ -5,6 +5,12 @@ import { convertXpub } from '../bitcoin/xpubConverter';
 import { RequestErrors, SnapError } from '../errors';
 import { getHDRootNode } from '../bitcoin/hdKeyring';
 import { getAddress } from '../bitcoin/simpleKeyring';
+interface Account{
+  xpub: string;
+  scriptType: ScriptType;
+  network: BitcoinNetwork;
+  address: string;
+}
 
 export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: string[], accounts: {}, mfp: string}> {
   const result = await snap.request({
@@ -22,6 +28,7 @@ export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: s
     try{
       let xfp = '';
       const xpubs: string[] = [];
+      const accounts: Array<Account>=[];
       const xpubsInNetworks = await Promise.all(Object.values(BitcoinNetwork).map(async (bitcoinNetwork: BitcoinNetwork) => {
         const network = bitcoinNetwork === BitcoinNetwork.Main ? networks.bitcoin : networks.testnet;
         const account = await Promise.all(Object.values(ScriptType).map(async (scriptType: ScriptType) => {
@@ -40,14 +47,18 @@ export async function getAllXpubs(origin: string, snap: Snap): Promise<{xpubs: s
               xpub = convertXpub(xpub, scriptType, network);
           }
           xpubs.push(xpub);
-          return {[scriptType]: {xpub, address}};
+          accounts.push({
+            xpub,
+            scriptType,
+            network: bitcoinNetwork,
+            address,
+          })
         }));
-        return {[bitcoinNetwork]: account};
       }));
       return {
         mfp: xfp,
         xpubs,
-        accounts: xpubsInNetworks
+        accounts,
       };
     }catch(e){
       console.log('e...', e);

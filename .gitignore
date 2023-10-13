@@ -3,6 +3,8 @@ packages/example/environments/.env.staging
 packages/example/environments/.env.production
 build/
 
+.yarn
+.DS_Store
 # ide
 .idea
 .yarn
