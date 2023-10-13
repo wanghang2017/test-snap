@@ -1,40 +1,45 @@
 import { useEffect, useState } from 'react';
-import { querySendInfo } from '../api/v1/sendInfo';
-import { fetchTransaction } from '../api/v1/fetchTransaction';
-import { BitcoinNetworkCode } from '../constant/supportedCoins';
 import { fromHdPathToObj } from '../lib/cryptoPath';
 import { coinManager } from '../services/CoinManager';
 import { BitcoinNetwork, Utxo } from '../interface';
 import { useAppStore } from '../mobx';
 import { logger } from '../logger';
+import { queryTxHex, queryUtxoMem } from '../api/mempool/uxto';
+import { EXTENDED_HD_PATH, EXTENDED_UNCHANGE_HD_PATH } from '../constant/bitcoin';
 
 export const useUtxo = () => {
-  const { current } = useAppStore();
+  const { current, settings:{ isTest, network } } = useAppStore();
   const [utxoList, setUtxoList] = useState<Utxo[]>([]);
   const [nextChangePath, setNextChangePath] = useState<string>('');
   const [pendingValue, setPendingValue] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-
+  
   useEffect(() => {
     if (current) {
       setLoading(true);
-      querySendInfo(current.coinCode).then(data => {
-        const utxoList = data.spendables
+      queryUtxoMem(current.receiveAddress.address, isTest).then(data => {
+        const res={
+          spendables: data.filter(item => item.status.confirmed),
+          pending: data.filter(item => !item.status.confirmed)
+        };
+        const utxoList = res.spendables
           .map(utxo => {
-            const { change, index } = fromHdPathToObj(utxo.hdPath);
+  
+            const hdPath = EXTENDED_HD_PATH[network][current.scriptType];
+            const { change, index } = fromHdPathToObj(hdPath);
             const pubkey = coinManager.xpubToPubkey(current.xpub, Number(change), Number(index));
             return {
               transactionHash: utxo.txid,
               index: utxo.voutN,
               address: coinManager.deriveAddress(pubkey, current.scriptType, current.network),
               value: utxo.value,
-              path: utxo.hdPath,
+              path: hdPath,
               pubkey,
             };
           });
-        const pendingValue = data.pending.reduce((total, tx) => total + tx.value, 0);
+        const pendingValue = res.pending.reduce((total, tx) => total + tx.value, 0);
         setPendingValue(pendingValue);
-        return { utxoList, nextChange: data.unusedChangeAddressHdPath, pendingValue };
+        return { utxoList, nextChange: EXTENDED_UNCHANGE_HD_PATH[network][current.scriptType], pendingValue };
       }).then(data => {
         setLoading(false);
         return fetchRawTx(data['utxoList'], data['nextChange'], current.network);
@@ -61,8 +66,8 @@ export const useUtxo = () => {
 
 const fetchRawTx = (utxoList: any[], nextChange: string, network: BitcoinNetwork) =>
   Promise.all(utxoList.map(each => {
-    const networkCode = network == BitcoinNetwork.Main ? BitcoinNetworkCode.Main : BitcoinNetworkCode.Test;
-    return fetchTransaction(networkCode, each.transactionHash).then(
+    const isTest = network == BitcoinNetwork.Main ?false : true;
+    return queryTxHex(each.transactionHash, isTest).then(
       data => ({
         ...each,
         rawHex: data,

@@ -15,6 +15,11 @@ const Settings = types
     dynamicAddress: types.boolean,
     changeAddress: types.optional(types.boolean, false),
   })
+  .views((self) => ({
+    get isTest() {
+      return self.network === BitcoinNetwork.Test;
+    }
+  }))
   .actions((self) => ({
     setNetwork: (network: BitcoinNetwork) => {
       self.network = network;

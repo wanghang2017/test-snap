@@ -57,11 +57,11 @@ export const GetAddress = observer(
       }, 2000);
     };
 
-    const handleRegister = useCallback(async (xpubs, mfp) => {
+    const handleRegister = useCallback(async (xpubs, mfp, params) => {
       try {
         setIsRegistering(accounts.length === 0);
         onRegister(true);
-        await register(xpubs, mfp);
+        await register(xpubs, mfp, params.accounts);
         onRevealed();
       } catch (e: unknown) {
         setIsRegistering(false);
@@ -80,7 +80,7 @@ export const GetAddress = observer(
         if (mfp && xpubs.length > 0) {
           trackGetAddress(network);
           setStatus(AppStatus.Register);
-          await handleRegister(xpubs, mfp);
+          await handleRegister(xpubs, mfp, params);
         }
       } catch (err: any) {
         if (expectErrorMessages.includes(err.message)) {

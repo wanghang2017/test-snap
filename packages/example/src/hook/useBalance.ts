@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppStore } from '../mobx';
 import { AppStatus } from '../mobx/runtime';
-import { SupportedCoins } from '../constant/supportedCoins';
-import { NETWORK_SCRIPT_TO_COIN } from '../constant/bitcoin';
-import { queryCoinV2 } from '../api';
 import { IAccount } from '../mobx/types';
 import { logger } from '../logger';
-import { WalletType } from '../interface';
+import { BitcoinNetwork, WalletType } from '../interface';
 import { balance as queryLightningBalance } from '../api/lightning/balance';
+import { queryUtxoMem } from '../api/mempool/uxto';
 
 interface Props {
   type?: WalletType
@@ -17,6 +15,7 @@ export const useBalance = (props?: Props) => {
   const {
     current,
     currentWalletType,
+    settings: { network },
     runtime: { setStatus, getWallet, setBalanceForWallet },
     lightning,
   } = useAppStore();
@@ -29,13 +28,16 @@ export const useBalance = (props?: Props) => {
   const refresh = () => {
     setCount(count + 1);
   };
+  const isTest = network === BitcoinNetwork.Test;
 
   const fetchBalance = useCallback((forceFetch = false) => {
     const queryBalance = async (current: IAccount) => {
-      const coinCode: SupportedCoins =
-        NETWORK_SCRIPT_TO_COIN[current.network][current.scriptType];
-      const response = await queryCoinV2();
-      const balance = Number(response.coins[coinCode].balance) || 0;
+      // const coinCode: SupportedCoins =
+      //   NETWORK_SCRIPT_TO_COIN[current.network][current.scriptType];
+      const data = await queryUtxoMem(current.receiveAddress.address, isTest);
+      const balance = data.filter(item => item.status.confirmed).reduce((p, n) => p+n.value, 0);
+      
+      // const balance = Number(response.coins[coinCode].balance) || 0;
       return { balance };
     };
 
@@ -110,7 +112,7 @@ export const useBalance = (props?: Props) => {
         setStatus(AppStatus.Ready);
       }
     }
-  }, [currentWalletType, current, lightning.current]);
+  }, [currentWalletType, current, lightning.current, isTest]);
 
   useEffect(() => {
     if (current || lightning.current) {

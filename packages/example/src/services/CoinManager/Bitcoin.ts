@@ -1,10 +1,24 @@
 import * as bitcoin from 'bitcoinjs-lib';
 import { networks } from 'bitcoinjs-lib';
+import ecc from '@bitcoinerlab/secp256k1';
 import { detectNetworkAndScriptType, networkAndScriptMap } from '../../lib';
 import * as bip32 from 'bip32';
 import { BitcoinNetwork, BitcoinScriptType } from '../../interface';
+import { EXTENDED_HD_PATH } from '../../constant/bitcoin';
+import { fromHdPathToObj } from '../../lib/cryptoPath';
 
 export class Bitcoin {
+
+
+  public getAddressFromXpub(xpub: string, scriptType: BitcoinScriptType, network: BitcoinNetwork) {
+    const derivationPath = EXTENDED_HD_PATH[network][scriptType];
+    const { index } = fromHdPathToObj(derivationPath);
+    const changeAddressPubkey = this.xpubToPubkey(xpub, Number(0), Number(index));
+
+
+    // 生成比特币地址
+    return this.deriveAddress(changeAddressPubkey, scriptType, network);
+  }
   public deriveAddress(publicKey: Buffer, scriptType: BitcoinScriptType, network: BitcoinNetwork): string {
     const networkConfig = this.getNetworkConfig(network);
     let address: string | undefined = '';
@@ -20,6 +34,13 @@ export class Bitcoin {
         break;
       case BitcoinScriptType.P2WPKH:
         address = bitcoin.payments.p2wpkh({ pubkey: publicKey, network: networkConfig }).address;
+        break;
+      case BitcoinScriptType.P2TR:
+        bitcoin.initEccLib(ecc);
+        address = bitcoin.payments.p2tr({
+          internalPubkey: publicKey.slice(1),
+          network: networkConfig,
+        }).address;
         break;
       default:
         address = '';

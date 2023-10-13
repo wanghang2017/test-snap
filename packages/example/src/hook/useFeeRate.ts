@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { queryFeeRate } from '../api/v1/feeRate';
+import { queryFeeRate } from '../api/mempool/uxto';
 import { useAppStore } from '../mobx';
 import { FeeRate } from '../components/SendModal/types';
 
@@ -10,7 +10,7 @@ const initFeeRate: FeeRate = {
 };
 
 export const useFeeRate = () => {
-  const { current } = useAppStore();
+  const { current, settings:{ isTest } } = useAppStore();
   const [feeRate, setFeeRate] = useState<FeeRate>(initFeeRate);
   const [count, setCount] = useState(0);
 
@@ -18,12 +18,11 @@ export const useFeeRate = () => {
 
   useEffect(() => {
     if (current) {
-      queryFeeRate(current.coinCode).then((res) => {
-        const feeRate = res.feeEstimation.feeRate;
+      queryFeeRate(isTest).then((feeRate) => {
         setFeeRate({
-          low: Math.round(Number(feeRate['70']) / 1024),
-          recommended: Math.round(Number(feeRate['60']) / 1024),
-          high: Math.round(Number(feeRate['30']) / 1024),
+          low:feeRate.minimumFee,
+          recommended: feeRate.economyFee,
+          high: feeRate.fastestFee,
         });
       });
     }

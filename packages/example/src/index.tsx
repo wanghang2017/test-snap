@@ -9,11 +9,11 @@ import { Router } from './Router';
 initSentry();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
-  </React.StrictMode>,
+
+  <BrowserRouter>
+    <Router />
+  </BrowserRouter>
+  ,
   document.getElementById('root'),
 );
 

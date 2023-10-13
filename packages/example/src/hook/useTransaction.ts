@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { TransactionDetail, TransactionStatus, TransactionTypes } from '../types';
-import { ActivityStatus, queryActivities } from '../api/v1/activities';
 import { useAppStore } from '../mobx';
 import { logger } from '../logger';
 import { WalletType } from '../interface';
+import { queryTxsMem } from '../api/mempool/uxto';
 
 interface UseTransaction {
   size: number;
   offset?: number;
 }
 
-export const useTransaction = ({ size, offset }: UseTransaction) => {
-  const { current, currentWalletType } = useAppStore();
+export const useTransaction = ({ size }: UseTransaction) => {
+  const { current, currentWalletType, settings:{ isTest } } = useAppStore();
   const [txList, setTxList] = useState<TransactionDetail[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [lastTx, setLastTx] = useState<number | undefined>(offset);
+  const [lastTx, setLastTx] = useState<string>('');
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [error, setError] = useState<string>();
 
@@ -27,34 +27,40 @@ export const useTransaction = ({ size, offset }: UseTransaction) => {
   };
 
   const loadMore = () => {
-    setLastTx(txList[txList.length - 1].marker);
+    setLastTx(txList[txList.length - 1].ID);
   };
 
   useEffect(() => {
     if (current && currentWalletType === WalletType.BitcoinWallet) {
       setLoading(true);
-      queryActivities({ coin: current.coinCode, count: size * 2, loadMoreTxs: lastTx })
+      queryTxsMem(current.receiveAddress.address, isTest,  lastTx )
         .then(res =>
-          res.activities.map(tx => {
-            const isReceive = tx.action === 'recv_external';
+          res.map((tx:any) => {
+            // console.log(current.receiveAddress.address);
+            const address = current.receiveAddress.address;
+            const isReceive = !tx.vin.some((vin: any) => vin.prevout.scriptpubkey_address === address);
+            const senderAddresses = tx.vin?.[0]?.prevout?.scriptpubkey_address || '';
+            const receiveAddress = tx.vout?.[1]?.scriptpubkey_address || '';
+            const senderAmount = tx.vin.filter((item: any) => item.prevout.scriptpubkey_address === address).reduce((p: any, n: any) => p + n.prevout.value, 0);
+            const receiveAmount = tx.vout.filter((item: any) => item.scriptpubkey_address === address).reduce((p: any, n: any) => p + n.value, 0);
             return {
               ID: tx.txid,
               type: isReceive ? TransactionTypes.Received : TransactionTypes.Sent,
-              status: tx.status === ActivityStatus.Complete ? TransactionStatus.Confirmed : TransactionStatus.Pending,
-              amount: (isReceive ? Math.abs(tx.amount) : tx.receiverAddresses?.[0]?.[1]) || 0,
-              address: (isReceive ? tx.senderAddresses?.[0] : tx.receiverAddresses?.[0]?.[0]) || '',
-              date: Math.floor(tx.createdTime * 1000),
+              status: tx.status.confirmed ? TransactionStatus.Confirmed : TransactionStatus.Pending,
+              amount: isReceive ? Math.abs(receiveAmount) : senderAmount || 0,
+              address: isReceive ? senderAddresses : receiveAddress || '',
+              date: Math.floor(tx.status.block_time * 1000),
               fee: tx.fee,
-              url: tx.explorerUrl,
-              from: tx.senderAddresses?.[0] || '',
-              to: tx.receiverAddresses?.[0]?.[0] || '',
-              marker: tx.modifiedTime,
-              confirmedNum: tx.confirmedNum,
-              confirmThreshold: tx.confirmThreshold,
+              url: `https://mempool.space/${isTest ?'testnet/':''}tx/${tx.txid}`,
+              from: senderAddresses,
+              to: isReceive? address:receiveAddress
+              // marker: tx.modifiedTime,
+              // confirmedNum: tx.confirmedNum,
+              // confirmThreshold: tx.confirmThreshold,
             };
           })
-            .reduce((list, cur) => {
-              if (list.some(tx => tx.ID === cur.ID)) {
+            .reduce((list:any, cur:any) => {
+              if (list.some((tx:any) => tx.ID === cur.ID)) {
                 // filter out the transaction indicates receiving, which is actually the transaction sent to change address,
                 // only keep the sending one for the same ID
                 return [...list, cur].filter(tx => tx.ID !== cur.ID || tx.type !== TransactionTypes.Received);
