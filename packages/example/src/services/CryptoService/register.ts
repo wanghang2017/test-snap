@@ -1,6 +1,6 @@
 import { getAppStore } from '../../mobx';
 import { storeAccount } from './storeAccount';
-import { register as registerMFP } from '../../api';
+// import { register as registerMFP } from '../../api';
 import { logger } from '../../logger';
 import { BitcoinScriptType, BitcoinNetwork } from '../../interface';
 import { coinManager } from '../CoinManager';
@@ -19,10 +19,10 @@ export const register = async (xpubs: string[], mfp: string, params:Array<Accoun
     if (registerAnotherMFP) {
       appStore.resetStore();
     }
-    const MfpRegistered = registeredMfp === mfp;
-    if (!MfpRegistered) {
-      await registerMFP(mfp);
-    }
+    // const MfpRegistered = registeredMfp === mfp;
+    // if (!MfpRegistered) {
+    //   await registerMFP(mfp);
+    // }
     
     await Promise.all(params.map(async ({ xpub,
       scriptType,
