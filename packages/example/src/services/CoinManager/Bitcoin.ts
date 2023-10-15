@@ -13,7 +13,12 @@ export class Bitcoin {
   public getAddressFromXpub(xpub: string, scriptType: BitcoinScriptType, network: BitcoinNetwork) {
     const derivationPath = EXTENDED_HD_PATH[network][scriptType];
     const { index } = fromHdPathToObj(derivationPath);
-    const changeAddressPubkey = this.xpubToPubkey(xpub, Number(0), Number(index));
+    const { config } = detectNetworkAndScriptType(xpub);
+
+    const node = bip32.fromBase58(xpub, { bip32: config, wif: 0 });
+
+    const changeAddressPubkey= node.derive(Number(0)).derive(Number(index)).publicKey;
+    // const changeAddressPubkey = this.xpubToPubkey(xpub, Number(0), Number(index));
 
 
     // 生成比特币地址

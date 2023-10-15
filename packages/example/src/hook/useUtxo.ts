@@ -30,7 +30,7 @@ export const useUtxo = () => {
             const pubkey = coinManager.xpubToPubkey(current.xpub, Number(change), Number(index));
             return {
               transactionHash: utxo.txid,
-              index: utxo.voutN,
+              index: utxo.vout,
               address: coinManager.deriveAddress(pubkey, current.scriptType, current.network),
               value: utxo.value,
               path: hdPath,
