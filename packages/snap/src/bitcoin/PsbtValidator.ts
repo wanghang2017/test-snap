@@ -28,7 +28,7 @@ export class PsbtValidator {
   }
 
   allInputsHaveRawTxHex() {
-    const result = this.tx.data.inputs.every((input, index) => !!input.nonWitnessUtxo);
+    const result = this.tx.data.inputs.every((input) => !!input.nonWitnessUtxo);
     if (!result) {
       this.error = SnapError.of(PsbtValidateErrors.InputsDataInsufficient);
     }
@@ -78,6 +78,16 @@ export class PsbtValidator {
     return result;
   }
 
+  someInputsBelongToCurrentAccount(accountSigner: AccountSigner) {
+    const result = this.tx.txInputs.some((_, index) =>
+      this.tx.inputHasHDKey(index, accountSigner),
+    );
+    if (!result) {
+      this.error = SnapError.of(PsbtValidateErrors.InputNotSpendable);
+    }
+    return result;
+  }
+
   changeAddressBelongsToCurrentAccount(accountSigner: AccountSigner) {
     const result = this.tx.data.outputs.every((output, index) => {
       if (output.bip32Derivation) {
@@ -105,7 +115,7 @@ export class PsbtValidator {
       return true;
     }
 
-    const witnessAmount = this.tx.data.inputs.reduce((total, input, index) => {
+    const witnessAmount = this.tx.data.inputs.reduce((total, input) => {
       return total + input.witnessUtxo.value;
     }, 0);
     const result = this.psbtHelper.inputAmount === witnessAmount;
@@ -122,8 +132,8 @@ export class PsbtValidator {
     this.allInputsHaveRawTxHex() &&
     this.everyInputMatchesNetwork() &&
     this.everyOutputMatchesNetwork() &&
-    this.allInputsBelongToCurrentAccount(accountSigner) &&
-    this.changeAddressBelongsToCurrentAccount(accountSigner) &&
+    this.someInputsBelongToCurrentAccount(accountSigner) &&
+    // this.changeAddressBelongsToCurrentAccount(accountSigner) &&
     this.feeUnderThreshold() &&
     this.witnessUtxoValueMatchesNoneWitnessOnes();
 

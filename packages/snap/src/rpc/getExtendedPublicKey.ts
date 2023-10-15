@@ -3,7 +3,7 @@ import { ScriptType, Snap } from '../interface';
 import { convertXpub } from '../bitcoin/xpubConverter';
 import { RequestErrors, SnapError } from '../errors';
 import { heading, panel, text } from '@metamask/snaps-ui';
-import { getHDRootNode, toXOnly } from '../bitcoin/hdKeyring';
+import { getHDRootNode } from '../bitcoin/hdKeyring';
 import { getAddress } from '../bitcoin/simpleKeyring';
 
 export async function getExtendedPublicKey(
@@ -49,7 +49,6 @@ export async function getExtendedPublicKey(
         if (scriptType !== ScriptType.P2TR) {
           xpub = convertXpub(xpub, scriptType, network);
         }
-        console.log('accountNode...', accountNode, address, xpub);
 
         return { mfp, xpub, address };
       } else {

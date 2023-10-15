@@ -12,7 +12,6 @@ export async function getSimpleAddress(
   origin: string,
   snap: Snap,
   network: Network,
-  index: number,
 ): Promise<Record<string, string> | string> {
   const networkName = network == networks.bitcoin ? 'mainnet' : 'testnet';
 

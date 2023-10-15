@@ -3,7 +3,10 @@ import { networks, payments, Psbt, crypto } from 'bitcoinjs-lib';
 import { BitcoinNetwork, BitcoinScriptType, Utxo } from '../interface';
 import coinSelect from 'coinselect';
 import coinSelectSplit from 'coinselect/split';
+import ecc from '@bitcoinerlab/secp256k1';
 
+
+bitcoin.initEccLib(ecc);
 type networkAndScriptType = {
   [key: string]: {
     network: BitcoinNetwork;

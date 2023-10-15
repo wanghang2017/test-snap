@@ -46,7 +46,7 @@ const Initial: FunctionComponent<InitialProps> = observer(({ model, close }) => 
   const closeTransactionFee = () => {
     setTransactionFee(false);
   };
-
+  
   return (
     <>
       <SendContainer>

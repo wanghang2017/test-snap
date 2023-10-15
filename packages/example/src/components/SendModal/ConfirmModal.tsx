@@ -61,7 +61,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = observer(props => {
                 <span className={'text-weight-bold text-secondary confirm-middle-span'}>
                   To
                 </span>
-                <span style={{ fontWeight: 600 }}>{model.to}</span>
+                <span style={{ fontWeight: 600, width: '100%', overflowWrap: 'break-word' }}>{model.to}</span>
               </div>
             </Container>
 

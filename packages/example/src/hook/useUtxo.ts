@@ -40,9 +40,9 @@ export const useUtxo = () => {
         const pendingValue = res.pending.reduce((total, tx) => total + tx.value, 0);
         setPendingValue(pendingValue);
         return { utxoList, nextChange: EXTENDED_UNCHANGE_HD_PATH[network][current.scriptType], pendingValue };
-      }).then(data => {
-        setLoading(false);
-        return fetchRawTx(data['utxoList'], data['nextChange'], current.network);
+      // }).then(data => {
+      //   setLoading(false);
+      //   return fetchRawTx(data['utxoList'], data['nextChange'], current.network);
       })
         .then(data => {
           const { utxoList, nextChange } = data;
@@ -64,10 +64,10 @@ export const useUtxo = () => {
   };
 };
 
-const fetchRawTx = (utxoList: any[], nextChange: string, network: BitcoinNetwork) =>
+export const fetchRawTx = (utxoList: any[], nextChange: string, network: BitcoinNetwork) =>
   Promise.all(utxoList.map(each => {
     const isTest = network == BitcoinNetwork.Main ?false : true;
-    return queryTxHex(each.transactionHash, isTest).then(
+    return queryTxHex(each.transactionHash || each.txId, isTest).then(
       data => ({
         ...each,
         rawHex: data,

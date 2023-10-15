@@ -24,6 +24,8 @@ export interface SignPsbt {
     psbt: string;
     network: BitcoinNetwork;
     scriptType: ScriptType;
+    signInputIndex: number;
+    signType: number;
   };
 }
 

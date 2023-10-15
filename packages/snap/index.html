@@ -144,10 +144,7 @@
         params: {
           snapId,
           request: {
-            method: 'btc_getAllXpubs',
-            params: {
-              someKey: "value"
-            }
+            method: 'btc_getAllXpubs'
           }
         }
       })
@@ -191,9 +188,13 @@
           request: {
             method: 'btc_signPsbt',
             params: {
-              psbt: "cHNidP8BAFUCAAAAAT9MXJk0OEoyuubJXTnMqxo7Hj08Wv7yHJsw9URN/9a7AQAAAAD/////ARwlAAAAAAAAGXapFLW2YqzVecKrjOg8i5S0MDzxe/OmiKwAAAAAAAEA4QIAAAAAAQGGHEltyRyXjljtT3zc4tO1/4Y1U5zibwVdAl9QxaXdCQEAAAAA/v///wI1xv9wAAAAABYAFIWiDQ/MrBorRi/oI6gcJXZ8OlKRECcAAAAAAAAZdqkUtbZirNV5wquM6DyLlLQwPPF786aIrAJHMEQCICh8bgzVpHXdYRzjQKHwro1i8zZQWb9JF0C90qy2UbN+AiA6x4zrT04ZDicTqT2xUuFywc7e1H/BYwm69N1w6W6/wAEhA2ijz+sT/T1ycTtaI1/ZfCmtv5r8BkT52aFU1akQJlJHqmchACIGA5QpeTH0HwcDirFXCpKj+/v0ttc8sOP4PwSLUJRWIJiXDP0+QYsAAAAAAAAAAAAA",
-              network,
-              scriptType: "P2PKH"
+              // psbt: "cHNidP8BAFUCAAAAAT9MXJk0OEoyuubJXTnMqxo7Hj08Wv7yHJsw9URN/9a7AQAAAAD/////ARwlAAAAAAAAGXapFLW2YqzVecKrjOg8i5S0MDzxe/OmiKwAAAAAAAEA4QIAAAAAAQGGHEltyRyXjljtT3zc4tO1/4Y1U5zibwVdAl9QxaXdCQEAAAAA/v///wI1xv9wAAAAABYAFIWiDQ/MrBorRi/oI6gcJXZ8OlKRECcAAAAAAAAZdqkUtbZirNV5wquM6DyLlLQwPPF786aIrAJHMEQCICh8bgzVpHXdYRzjQKHwro1i8zZQWb9JF0C90qy2UbN+AiA6x4zrT04ZDicTqT2xUuFywc7e1H/BYwm69N1w6W6/wAEhA2ijz+sT/T1ycTtaI1/ZfCmtv5r8BkT52aFU1akQJlJHqmchACIGA5QpeTH0HwcDirFXCpKj+/v0ttc8sOP4PwSLUJRWIJiXDP0+QYsAAAAAAAAAAAAA",
+              // network,
+              // scriptType: "P2PKH"
+
+              psbt: "cHNidP8BAH0CAAAAAeFykz3EA+bHCmleNUmh7DPydSAFS0UoDYhAaFz5D6RYAQAAAAD/////AugDAAAAAAAAIlEgx/wz9eDo1F/b7rYrWUiopxKY1ivyNSDpYJ3Mz83rqi0HiBwAAAAAABYAFAD985yyMs7rQiix+pmhifuNyFhwAAAAAAABAOICAAAAAAEBpQM8leQo6JXSr6dfb365abdrtcuDJ3UuCD+o/8Q/MvsAAAAAAP////8C6AMAAAAAAAAZdqkURgg4wgOWXJ9DughUTRVGPVfP3TqIrNGMHAAAAAAAFgAUAP3znLIyzutCKLH6maGJ+43IWHACSDBFAiEAuyvvZyLpGn3KtIj/HkE+PkXrwZEW4EoM0WXbQaoEFkYCIAL4/0JRP5yuUHeyVIWrelYNikbbqgMK0A0ldU/sUWFdASECJSNAkL53BiyE3ZWyT8Jj9lFOvyPrQzmI507/1Q1Mn5EAAAAAAQEf0YwcAAAAAAAWABQA/fOcsjLO60IosfqZoYn7jchYcCIGAiUjQJC+dwYshN2Vsk/CY/ZRTr8j60M5iOdO/9UNTJ+RGCIpHrBUAACAAQAAgAAAAIAAAAAAAAAAAAAAIgICJSNAkL53BiyE3ZWyT8Jj9lFOvyPrQzmI507/1Q1Mn5EYIikesFQAAIABAACAAAAAgAAAAAAAAAAAAA==",
+              network: 'test',
+              scriptType: "P2WPKH"
             }
           }
         }

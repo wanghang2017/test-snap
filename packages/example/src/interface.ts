@@ -22,7 +22,7 @@ export type Utxo = {
   index: number;
   value: number;
   pubkey: Buffer;
-  rawHex: string;
+  rawHex?: string;
   path: string;
 };
 

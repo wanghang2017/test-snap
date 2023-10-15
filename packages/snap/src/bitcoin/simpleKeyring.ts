@@ -1,13 +1,5 @@
-import {
-  Network,
-  networks,
-  crypto,
-  address,
-  initEccLib,
-  payments,
-} from 'bitcoinjs-lib';
+import { Network, networks, crypto, address, payments } from 'bitcoinjs-lib';
 import bs58check from 'bs58check';
-import ecc from '@bitcoinerlab/secp256k1';
 import { ScriptType } from 'interface';
 
 export function privateKeyToWIF(privateKeyHex: string) {
@@ -18,7 +10,11 @@ export function privateKeyToWIF(privateKeyHex: string) {
   return bs58check.encode(extendedPrivateKey);
 }
 
-export function getAddress(network: Network, publicKey: string, scriptType?: ScriptType) {
+export function getAddress(
+  network: Network,
+  publicKey: string,
+  scriptType?: ScriptType,
+) {
   const bufferPublicKey = Buffer.from(publicKey, 'hex');
   const hash = crypto.hash160(bufferPublicKey);
 
@@ -28,13 +24,12 @@ export function getAddress(network: Network, publicKey: string, scriptType?: Scr
     addresses['P2PKH'] = address.toBase58Check(hash, 0);
 
     const result = payments.p2sh({
-      redeem: payments.p2wpkh({pubkey: bufferPublicKey, network}),
+      redeem: payments.p2wpkh({ pubkey: bufferPublicKey, network }),
     });
     addresses['P2SH-P2WPKH'] = result.address;
 
     addresses['P2WPKH'] = address.toBech32(hash, 0, 'bc');
 
-    initEccLib(ecc);
     const p2trInstance = payments.p2tr({
       internalPubkey: bufferPublicKey.slice(1),
       network,
@@ -45,13 +40,12 @@ export function getAddress(network: Network, publicKey: string, scriptType?: Scr
     addresses['P2PKH'] = address.toBase58Check(hash, 111);
 
     const result = payments.p2sh({
-      redeem: payments.p2wpkh({pubkey: bufferPublicKey, network}),
+      redeem: payments.p2wpkh({ pubkey: bufferPublicKey, network }),
     });
     addresses['P2SH-P2WPKH'] = result.address;
 
     addresses['P2WPKH'] = address.toBech32(hash, 0, 'tb');
 
-    initEccLib(ecc);
     const p2trInstance = payments.p2tr({
       internalPubkey: bufferPublicKey.slice(1),
       network,
@@ -61,7 +55,7 @@ export function getAddress(network: Network, publicKey: string, scriptType?: Scr
   }
 
   console.log('addresses...', addresses);
-  if (scriptType){
+  if (scriptType) {
     return addresses[scriptType];
   }
 

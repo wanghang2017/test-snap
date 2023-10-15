@@ -24,6 +24,7 @@ import { btcToSatoshi, satoshiToBTC } from '../../lib/helper';
 import { bitcoinUnitMap } from '../../lib/unit';
 import { mapErrorToUserFriendlyError } from '../../errors/Snap/SnapError';
 import { logger } from '../../logger';
+import { fetchRawTx } from '../../hook/useUtxo';
 
 const dealWithDigital = (text: string, precision = 2) => {
   const digitalRegex =
@@ -41,7 +42,7 @@ const dealWithDigital = (text: string, precision = 2) => {
 };
 
 class SendViewModel {
-  public to = '';
+  public to = 'tb1pcl7r8a0qar29lklwkc44jj9g5uff343t7g6jp6tqnhxvln0t4gksysc3fv';
   private sendAmountText = '';
   private decimal = 8;
   private decimalFactor = new BigNumber(10).pow(this.decimal);
@@ -437,18 +438,25 @@ class SendViewModel {
     if (this.sendInfo) {
       try {
         this.isSending = true;
+
+        // TODO: add UTXO filter
+        const inputs = [...this.selectedResult.inputs] as Utxo[];
+        const commonUTXO = inputs.filter((each) => each.value !== 546 ).sort((a, b)=>b.value - a.value).slice(0, 1);
+        const selectInputs:any = await fetchRawTx(commonUTXO, '', this.network);
+
         const psbt = generatePSBT(
           this.scriptType,
           this.sendInfo,
           this.network,
-          this.selectedResult.inputs,
+          selectInputs.utxoList,
           this.selectedResult.outputs,
         );
-
-        if (!this.validateTransaction(psbt, this.selectedResult.inputs)) {
+        
+        if (!this.validateTransaction(psbt, selectInputs.utxoList)) {
           throw Error('Transaction is not valid');
         }
 
+        console.log('psbt...', psbt);
         const { txId, txHex } = await signPsbt(
           psbt.toBase64(),
           this.network,

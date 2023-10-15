@@ -7710,6 +7710,7 @@ __metadata:
     bs58check: ^2.1.2
     buffer: ^6.0.3
     crypto-js: ^4.1.1
+    ecpair: ^2.1.0
     light-bolt11-decoder: ^2.1.0
     prettier: ^2.7.1
     secp256k1: ^5.0.0
@@ -9935,6 +9936,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ecpair@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "ecpair@npm:2.1.0"
+  dependencies:
+    randombytes: ^2.1.0
+    typeforce: ^1.18.0
+    wif: ^2.0.6
+  checksum: 924a776808f91d2fdd33a7033f84e3bbfe668ae98c0b9764c7b923e018accd8de57012bf20e419e0a5ef73ec3ec3738a654e71abe12f537b2fd7bcf02b93659f
+  languageName: node
+  linkType: hard
+
 "ee-first@npm:1.1.1":
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
@@ -11017,6 +11029,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example@workspace:packages/example"
   dependencies:
+    "@bitcoinerlab/secp256k1": ^1.0.5
     "@metamask/example-snap": ^0.7.0
     "@metamask/providers": ^8.1.1
     "@semantic-ui-react/css-patch": ^1.0.0
@@ -23209,7 +23222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typeforce@npm:^1.11.3, typeforce@npm:^1.11.5":
+"typeforce@npm:^1.11.3, typeforce@npm:^1.11.5, typeforce@npm:^1.18.0":
   version: 1.18.0
   resolution: "typeforce@npm:1.18.0"
   checksum: e3b21e27e76cb05f32285bef7c30a29760e79c622cfe4aa3c179ce49d1c7895b7154c8deedb9fe4599b1fd0428d35860d43e0776da1c04861168f3ad7ed99c70

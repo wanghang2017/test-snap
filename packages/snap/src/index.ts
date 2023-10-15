@@ -40,7 +40,6 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
         origin,
         snap,
         getNetwork(request.params.network),
-        request.params.index,
       );
     case 'btc_getAllXpubs':
       return getAllXpubs(origin, snap);
@@ -52,6 +51,8 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
         psbt,
         request.params.network,
         request.params.scriptType,
+        request.params.signInputIndex,
+        request.params.signType
       );
     case 'btc_getMasterFingerprint':
       return getMasterFingerprint(snap);
