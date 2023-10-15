@@ -210,6 +210,20 @@ const composePsbt = (
           network: networkConfig,
         }).output,
       });
+    }else if(scriptType === BitcoinScriptType.P2TR){
+      const childNodeXOnlyPubkey = each.pubkey.slice(1);
+      const { output } = bitcoin.payments.p2tr({
+        internalPubkey: childNodeXOnlyPubkey,
+      });
+      psbt.addInput({
+        hash: each.txId,
+        index: each.vout,
+        witnessUtxo: {
+          script: output|| Buffer.from(''),
+          value: each.value,
+        },
+        tapInternalKey: childNodeXOnlyPubkey,
+      });
     } else {
       throw new Error('script Type not matched');
     }
