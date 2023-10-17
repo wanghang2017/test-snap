@@ -7,6 +7,9 @@ import { getHDRootNode } from '../bitcoin/hdKeyring';
 
 export async function signPsbt(domain: string, snap: Snap, psbt: string, network: BitcoinNetwork, scriptType: ScriptType, signInputIndex: number, signType: number): Promise<{ txId: string, txHex: string }> {
   const tx = new Transaction(psbt, network);
+
+
+  
   const txDetails = tx.extractPsbtJson()
 
   const result = await snap.request({
@@ -21,6 +24,7 @@ export async function signPsbt(domain: string, snap: Snap, psbt: string, network
       ]),
     },
   });
+  
 
   if (result) {
     const {node: accountPrivateKey, mfp} = await getHDRootNode(snap, getNetwork(network), scriptType)

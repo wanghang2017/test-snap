@@ -16,7 +16,7 @@ import {
   trackTransactionBroadcastSucceed,
 } from '../../tracking';
 import { FeeRate } from './types';
-import { BroadcastData, pushTransaction } from '../../api/v1/pushTransaction';
+import { BroadcastData } from '../../api/v1/pushTransaction';
 import { NETWORK_SCRIPT_TO_COIN } from '../../constant/bitcoin';
 import { validateTx } from '../../lib/psbtValidator';
 import { Psbt } from 'bitcoinjs-lib';
@@ -25,6 +25,7 @@ import { bitcoinUnitMap } from '../../lib/unit';
 import { mapErrorToUserFriendlyError } from '../../errors/Snap/SnapError';
 import { logger } from '../../logger';
 import { fetchRawTx } from '../../hook/useUtxo';
+import { pushTransaction } from '../../api/mempool/uxto';
 
 const dealWithDigital = (text: string, precision = 2) => {
   const digitalRegex =
@@ -466,9 +467,10 @@ class SendViewModel {
         trackSendSign(this.network);
 
         trackTransactionBroadcast(this.network);
-        const coin = NETWORK_SCRIPT_TO_COIN[this.network][this.scriptType];
-        const txData = this.adaptBroadcastData({ txId, txHex });
-        await pushTransaction(coin, txData);
+        // const coin = NETWORK_SCRIPT_TO_COIN[this.network][this.scriptType];
+        // const txData = this.adaptBroadcastData({ txId, txHex });
+        await pushTransaction(txHex, this.network===BitcoinNetwork.Test); 
+
         trackTransactionBroadcastSucceed(this.network);
 
         this.status = 'success';
