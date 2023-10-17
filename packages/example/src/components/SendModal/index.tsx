@@ -34,7 +34,7 @@ const SendContainer = ({ network, scriptType, close, unit, currencyRate }: Conta
   }, []);
 
   useEffect(() => {
-    model.setUtxos(utxos);
+    model.setUtxos(utxos.filter((each) => each.value !== 546).sort((a, b) => b.value - a.value));
     model.setFeeRate(feeRate);
     if (sendInfo) {
       model.setSendInfo(sendInfo);

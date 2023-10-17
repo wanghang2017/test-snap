@@ -439,10 +439,15 @@ class SendViewModel {
     if (this.sendInfo) {
       try {
         this.isSending = true;
-
-        // TODO: add UTXO filter
         const inputs = [...this.selectedResult.inputs] as Utxo[];
-        const commonUTXO = inputs.filter((each) => each.value !== 546 ).sort((a, b)=>b.value - a.value).slice(0, 1);
+        const commonUTXO : Utxo[] = [];
+        let value = 0;
+        inputs.forEach((each) => {
+          value+=each.value;
+          if(value<this.sendSatoshis+this.fee){
+            commonUTXO.push(each);
+          }
+        });
         const selectInputs:any = await fetchRawTx(commonUTXO, '', this.network);
 
         const psbt = generatePSBT(
