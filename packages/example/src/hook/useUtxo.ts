@@ -45,6 +45,7 @@ export const useUtxo = () => {
       //   return fetchRawTx(data['utxoList'], data['nextChange'], current.network);
       })
         .then(data => {
+          setLoading(false);
           const { utxoList, nextChange } = data;
           setUtxoList(utxoList);
           setNextChangePath(nextChange);

@@ -24,7 +24,7 @@ export type RpcRequest = {
   request: MetamaskBTCRpcRequest;
 };
 
-export const onRpcRequest = async ({origin, request}: RpcRequest) => {
+export const onRpcRequest:any = async ({origin, request}: RpcRequest) => {
   await validateRequest(snap, origin, request);
 
   switch (request.method) {
