@@ -2,7 +2,7 @@ import { RequestType } from '../types';
 import { query } from '../request-utils/query';
 
 
-
+import axios from 'axios';
 export type UtxoListResponse = any[];
 export interface UtxoTxResponse {
   [key:string]:any
@@ -32,5 +32,12 @@ export const queryFeeRate = (isTest: boolean): Promise<UtxoTxResponse> => {
 
 export const queryTxsMem = (address: string, isTest: boolean, loadMoreTxs:string): Promise<UtxoTxResponse> => {
   return query(`${isTest ? '/testnet' : ''}/api/address/${address}/txs?after_txid=${loadMoreTxs}`, RequestType.Get, {});
+};
+
+
+
+export const pushTransaction = (txHex: string, isTest: boolean): Promise<UtxoTxResponse> => {
+  const url = `${isTest ? '/testnet' : ''}/api/tx`;
+  return axios.post(url, txHex);
 };
 

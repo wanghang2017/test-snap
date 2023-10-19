@@ -13,6 +13,9 @@ interface ISignResult{
 }
 export async function signPsbt(domain: string, snap: Snap, psbt: string, network: BitcoinNetwork, scriptType: ScriptType, signInputIndex: number, signType: number): Promise<ISignResult> {
   const tx = new Transaction(psbt, network);
+
+
+  
   const txDetails = tx.extractPsbtJson()
 
   const result = await snap.request({
@@ -27,6 +30,7 @@ export async function signPsbt(domain: string, snap: Snap, psbt: string, network
       ]),
     },
   });
+  
 
   if (result) {
     try{
