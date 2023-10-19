@@ -26,11 +26,13 @@ export const getHDNode = async (snap: Snap, hdPath: string) => {
 
   const privateKeyBuffer = Buffer.from(trimHexPrefix(slip10Node.privateKey), 'hex');
   const chainCodeBuffer = Buffer.from(trimHexPrefix(slip10Node.chainCode), 'hex');
-  const node: BIP32Interface = bip32.fromPrivateKey(
-    privateKeyBuffer,
-    chainCodeBuffer,
-    network,
-  );
+  // const node: BIP32Interface = bip32.fromPrivateKey(
+  //   privateKeyBuffer,
+  //   chainCodeBuffer,
+  //   network,
+  // );
+  const node = {} as BIP32Interface;
+
   //@ts-ignore
   // ignore checking since no function to set depth for node
   node.__DEPTH = slip10Node.depth;

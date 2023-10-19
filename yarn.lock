@@ -7243,6 +7243,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bip32@npm:4.0.0":
+  version: 4.0.0
+  resolution: "bip32@npm:4.0.0"
+  dependencies:
+    "@noble/hashes": ^1.2.0
+    "@scure/base": ^1.1.1
+    typeforce: ^1.11.5
+    wif: ^2.0.6
+  checksum: a36253ac164db50a25e88effce84aec1eaba2ec2fbd7a19bc1f836f9b1c934fa148c3a01ddece7f136596330074d98c6b2a441e51914c302d130f56f0f893d0d
+  languageName: node
+  linkType: hard
+
 "bip32@npm:^2.0.6":
   version: 2.0.6
   resolution: "bip32@npm:2.0.6"
@@ -7703,7 +7715,7 @@ __metadata:
     "@types/bs58check": ^2.1.0
     "@types/create-hash": ^1.2.2
     "@types/crypto-js": ^4.1.1
-    bip32: ^2.0.6
+    bip32: 4.0.0
     bitcoinjs-lib: latest
     bitcoinjs-message: ^2.2.0
     bn.js: ^5.2.1

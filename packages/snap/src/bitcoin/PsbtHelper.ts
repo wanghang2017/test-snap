@@ -14,8 +14,13 @@ export class PsbtHelper {
   get inputAmount() {
     return this.tx.data.inputs.reduce((total, input, index) => {
       const vout = this.tx.txInputs[index].index;
-      const prevTx = Transaction.fromHex(input.nonWitnessUtxo.toString('hex'));
-      return total + prevTx.outs[vout].value;
+      if (input.nonWitnessUtxo){
+        const prevTx = Transaction.fromHex(input.nonWitnessUtxo.toString('hex'));
+        return total + prevTx.outs[vout].value;
+      }else if(input.witnessUtxo){
+        return total + input.witnessUtxo.value;
+      }
+      return total;
     }, 0);
   }
 
@@ -32,9 +37,14 @@ export class PsbtHelper {
 
   get fromAddresses() {
     return this.tx.data.inputs.map((input, index) => {
-      const prevOuts = Transaction.fromHex(input.nonWitnessUtxo.toString('hex')).outs
-      const vout = this.tx.txInputs[index].index;
-      return address.fromOutputScript(prevOuts[vout].script, this.network)
+      if (input.nonWitnessUtxo){
+        const prevOuts = Transaction.fromHex(input.nonWitnessUtxo.toString('hex')).outs
+        const vout = this.tx.txInputs[index].index;
+        return address.fromOutputScript(prevOuts[vout].script, this.network)
+      }else if(input.witnessUtxo){
+        return address.fromOutputScript(input.witnessUtxo.script, this.network)
+      }
+        return undefined;
     })
   }
 

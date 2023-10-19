@@ -1,4 +1,4 @@
-export * from './singer';
+export * from './accountSinger';
 export * from './simpleKeyring';
 export * from './transaction';
 export * from './getNetwork';
